@@ -1,10 +1,20 @@
 /* eslint-disable react/prop-types */
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
 
 const UserContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? savedUser : null;
+  });
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", user);
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -14,4 +24,3 @@ const UserContextProvider = ({ children }) => {
 };
 
 export default UserContextProvider;
-
